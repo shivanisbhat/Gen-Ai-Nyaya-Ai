@@ -14,7 +14,6 @@ def chunk_into_clauses(text: str, max_chars: int = 1200) -> List[Dict]:
     """
     Enhanced chunking for legal documents that handles various section patterns
     """
-    # Legal section patterns to split on
     section_patterns = [
         r'^\*\*[A-Z\s]+\*\*$',  # **SECTION HEADERS**
         r'^[A-Z\s]{3,}:$',      # SECTION HEADERS:
@@ -28,7 +27,6 @@ def chunk_into_clauses(text: str, max_chars: int = 1200) -> List[Dict]:
         r'^BY\s+AND\s+BETWEEN', # BY AND BETWEEN
     ]
     
-    # Split text into paragraphs
     paragraphs = re.split(r'\n\s*\n', text)
     chunks = []
     current_chunk = ""
@@ -39,11 +37,9 @@ def chunk_into_clauses(text: str, max_chars: int = 1200) -> List[Dict]:
         if not para:
             continue
             
-        # Check if this paragraph starts a new section
         is_section_start = any(re.match(pattern, para, re.IGNORECASE | re.MULTILINE) 
                               for pattern in section_patterns)
         
-        # If we hit a new section and have content, save current chunk
         if is_section_start and current_chunk.strip():
             chunks.append({
                 "id": f"section_{chunk_id}", 
@@ -52,9 +48,7 @@ def chunk_into_clauses(text: str, max_chars: int = 1200) -> List[Dict]:
             chunk_id += 1
             current_chunk = para + "\n\n"
         else:
-            # Add to current chunk, but check size limit
             if len(current_chunk) + len(para) > max_chars and current_chunk.strip():
-                # Save current chunk and start new one
                 chunks.append({
                     "id": f"section_{chunk_id}", 
                     "text": current_chunk.strip()
@@ -64,14 +58,12 @@ def chunk_into_clauses(text: str, max_chars: int = 1200) -> List[Dict]:
             else:
                 current_chunk += para + "\n\n"
     
-    # Don't forget the last chunk
     if current_chunk.strip():
         chunks.append({
             "id": f"section_{chunk_id}", 
             "text": current_chunk.strip()
         })
     
-    # If no proper sections found, fall back to simple splitting
     if len(chunks) <= 1 and len(text) > max_chars:
         return simple_chunk_fallback(text, max_chars)
     

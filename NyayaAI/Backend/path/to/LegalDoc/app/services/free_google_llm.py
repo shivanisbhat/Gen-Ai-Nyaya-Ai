@@ -7,10 +7,9 @@ import time
 
 logger = logging.getLogger(__name__)
 
-# Configure the free Gemini API
 try:
     genai.configure(api_key=settings.GOOGLE_API_KEY)
-    print("✅ Google AI Studio configured successfully")
+    print("Google AI Studio configured successfully")
 except Exception as e:
     logger.error(f"Error configuring Google AI: {e}")
     raise
@@ -18,9 +17,8 @@ except Exception as e:
 class FreeGoogleLLM:
     def __init__(self):
         try:
-            # Use the free Gemini Flash model
             self.model = genai.GenerativeModel(settings.LLM_MODEL)
-            print(f"✅ Free Gemini model loaded: {settings.LLM_MODEL}")
+            print(f"Free Gemini model loaded: {settings.LLM_MODEL}")
         except Exception as e:
             logger.error(f"Error loading Gemini model: {e}")
             raise
@@ -32,7 +30,7 @@ class FreeGoogleLLM:
                 response = self.model.generate_content(
                     prompt,
                     generation_config=genai.types.GenerationConfig(
-                        temperature=0.1,  # Low temperature for factual responses
+                        temperature=0.1,  
                         max_output_tokens=1200,
                         top_p=0.8,
                         top_k=40,
@@ -43,7 +41,7 @@ class FreeGoogleLLM:
             except Exception as e:
                 if "429" in str(e) or "quota" in str(e).lower():
                     if attempt < max_retries - 1:
-                        wait_time = 2 ** attempt  # Exponential backoff
+                        wait_time = 2 ** attempt  
                         logger.warning(f"Rate limit hit, waiting {wait_time}s...")
                         time.sleep(wait_time)
                         continue
@@ -56,7 +54,6 @@ class FreeGoogleLLM:
         
         return "Unable to process request at this time."
 
-# Global instance
 try:
     free_google_llm = FreeGoogleLLM()
 except Exception as e:

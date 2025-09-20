@@ -10,7 +10,6 @@ from app.services.kb_indexer import rebuild_knowledge_base, get_kb_status
 from app.services.storage import SessionLocal, UserDoc
 from app.config import settings
 
-# Set up logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -27,7 +26,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Create necessary directories
 os.makedirs(settings.DATA_DIR, exist_ok=True)
 os.makedirs(os.path.join(settings.DATA_DIR, "kb"), exist_ok=True)
 

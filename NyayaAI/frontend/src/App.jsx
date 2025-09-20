@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from 'react'
 import * as pdfjsLib from 'pdfjs-dist'
 import './App.css'
 
-// Set up the worker with matching version
 pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`
 
 function App() {
@@ -20,10 +19,8 @@ function App() {
   const [serverStatus, setServerStatus] = useState('unknown')
   const messagesEndRef = useRef(null)
 
-  // API configuration
   const API_BASE = 'http://localhost:8000'
 
-  // Check server status on component mount
   useEffect(() => {
     checkServerStatus()
   }, [])
@@ -34,17 +31,16 @@ function App() {
       if (response.ok) {
         const data = await response.json()
         setServerStatus('connected')
-        console.log('✅ Server status:', data)
+        console.log('Server status:', data)
       } else {
         setServerStatus('error')
       }
     } catch (error) {
       setServerStatus('disconnected')
-      console.error('❌ Server not reachable:', error)
+      console.error(' Server not reachable:', error)
     }
   }
 
-  // Function to extract text from PDF with better formatting
   const extractTextFromPDF = async (file) => {
     setIsProcessing(true)
     try {
@@ -53,16 +49,13 @@ function App() {
       let fullText = ''
       console.log(`📄 PDF Info: ${pdf.numPages} pages found`)
       
-      // Extract text from each page
       for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
         console.log(`📖 Processing page ${pageNum}...`)
         const page = await pdf.getPage(pageNum)
         const textContent = await page.getTextContent()
         
-        // Better text extraction with positioning
         const pageText = textContent.items
           .map(item => {
-            // Add spacing based on text positioning
             let text = item.str
             if (item.hasEOL) {
               text += '\n'
@@ -70,17 +63,15 @@ function App() {
             return text
           })
           .join(' ')
-          .replace(/\s+/g, ' ') // Clean up multiple spaces
+          .replace(/\s+/g, ' ') 
           .trim()
         
         fullText += `\n=== PAGE ${pageNum} ===\n${pageText}\n`
-        console.log(`✅ Page ${pageNum} extracted: ${pageText.length} characters`)
+        console.log(`Page ${pageNum} extracted: ${pageText.length} characters`)
       }
       
-      // Log the full text in chunks to avoid console truncation
       console.log('🔍 FULL EXTRACTED TEXT:')
       console.log('=' .repeat(50))
-      // Split into chunks for better console viewing
       const chunkSize = 1000
       for (let i = 0; i < fullText.length; i += chunkSize) {
         const chunk = fullText.substring(i, i + chunkSize)
@@ -92,7 +83,7 @@ function App() {
       setExtractedText(fullText)
       return fullText
     } catch (error) {
-      console.error('❌ Error extracting PDF text:', error)
+      console.error(' Error extracting PDF text:', error)
       alert('Error reading PDF file. Please try again.')
       return null
     } finally {
@@ -100,7 +91,6 @@ function App() {
     }
   }
 
-  // Upload PDF to backend
   const uploadPDFToServer = async (file) => {
     try {
       const formData = new FormData()
@@ -113,20 +103,19 @@ function App() {
       
       if (response.ok) {
         const data = await response.json()
-        console.log('✅ Document uploaded:', data)
+        console.log('Document uploaded:', data)
         return data.doc_id
       } else {
         const error = await response.text()
-        console.error('❌ Upload failed:', error)
+        console.error(' Upload failed:', error)
         throw new Error('Upload failed')
       }
     } catch (error) {
-      console.error('❌ Error uploading document:', error)
+      console.error(' Error uploading document:', error)
       throw error
     }
   }
 
-  // Query the RAG system
   const queryRAGSystem = async (docId, query) => {
     try {
       const formData = new FormData()
@@ -140,15 +129,15 @@ function App() {
       
       if (response.ok) {
         const data = await response.json()
-        console.log('✅ RAG Analysis result:', data)
+        console.log('RAG Analysis result:', data)
         return data
       } else {
         const error = await response.text()
-        console.error('❌ Query failed:', error)
+        console.error(' Query failed:', error)
         throw new Error('Query failed')
       }
     } catch (error) {
-      console.error('❌ Error querying RAG system:', error)
+      console.error(' Error querying RAG system:', error)
       throw error
     }
   }
@@ -167,9 +156,9 @@ function App() {
           try {
             const docId = await uploadPDFToServer(file)
             setUploadedDocId(docId)
-            console.log('✅ Document ready for analysis with ID:', docId)
+            console.log('Document ready for analysis with ID:', docId)
           } catch (error) {
-            console.error('❌ Failed to upload document:', error)
+            console.error(' Failed to upload document:', error)
             alert('Failed to upload document to server. You can still view the extracted text.')
           }
         }
@@ -217,7 +206,6 @@ function App() {
     if (uploadedDocId && serverStatus === 'connected') {
       setIsAnalyzing(true)
       try {
-        // Query the RAG system
         const result = await queryRAGSystem(uploadedDocId, currentInput)
         
         const aiResponse = {
@@ -238,7 +226,6 @@ function App() {
         setIsAnalyzing(false)
       }
     } else {
-      // Simulate AI response with extracted text info
       setTimeout(() => {
         const aiResponse = {
           text: `Based on the document "${fileName}", this is a response using the extracted text. The document contains ${extractedText.length} characters of text. ${uploadedDocId ? '' : 'Note: AI analysis requires server connection.'}`,
@@ -256,7 +243,6 @@ function App() {
     }
   }
 
-  // Auto-scroll to bottom of messages
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
@@ -270,7 +256,6 @@ function App() {
             <p className="lead text-muted">Simplifying your legal documents, clause by clause.</p>
             <p className="text-muted">Aapke kanooni dastavezon ko saral banaye.</p>
             
-            {/* Server Status Indicator */}
             <div className="mt-3">
               <span className={`badge ${
                 serverStatus === 'connected' ? 'bg-success' : 
@@ -329,7 +314,6 @@ function App() {
             </div>
           </div>
 
-          {/* Show extracted text preview with full text option */}
           {extractedText && (
             <div className="card mb-4">
               <div className="card-header d-flex justify-content-between align-items-center">
@@ -339,7 +323,6 @@ function App() {
                   onClick={() => {
                     console.log('📋 Full extracted text copied to console:')
                     console.log(extractedText)
-                    // Copy to clipboard
                     navigator.clipboard.writeText(extractedText)
                       .then(() => alert('Text copied to clipboard!'))
                       .catch(() => alert('Could not copy to clipboard'))
@@ -368,7 +351,7 @@ function App() {
                   {uploadedDocId && (
                     <div className="mt-1">
                       <small className="text-success">
-                        ✅ Document uploaded to server - Ready for AI analysis!
+                        Document uploaded to server - Ready for AI analysis!
                       </small>
                     </div>
                   )}
@@ -377,7 +360,6 @@ function App() {
             </div>
           )}
 
-          {/* Results section */}
           {showResults && (
             <div className="card shadow-sm mb-4">
               <div className="card-header">
@@ -472,7 +454,6 @@ function App() {
             </div>
           )}
 
-          {/* Chat section */}
           {showChat && (
             <div className="card shadow-sm chat-container">
               <div className="card-header text-center fw-bold d-flex justify-content-between align-items-center">
@@ -535,16 +516,14 @@ function App() {
             </div>
           )}
 
-          {/* Analysis Result Display */}
           {analysisResult && (
             <div className="card shadow-sm mt-4">
               <div className="card-header">
                 <h5 className="mb-0">🏛️ Latest AI Analysis</h5>
               </div>
               <div className="card-body">
-                {/* AI Answer */}
                 <div className="mb-3">
-                  <h6 className="text-primary">🤖 AI Explanation:</h6>
+                  <h6 className="text-primary">AI Explanation:</h6>
                   <div className="alert alert-info">
                     <div style={{whiteSpace: 'pre-line'}}>
                       {analysisResult.answer}
@@ -552,10 +531,9 @@ function App() {
                   </div>
                 </div>
 
-                {/* User Clause */}
                 {analysisResult.user_clause && (
                   <div className="mb-3">
-                    <h6 className="text-primary">📋 Analyzed Clause:</h6>
+                    <h6 className="text-primary">Analyzed Clause:</h6>
                     <div className="alert alert-light">
                       <small>
                         {analysisResult.user_clause.text?.substring(0, 300)}
@@ -565,7 +543,6 @@ function App() {
                   </div>
                 )}
 
-                {/* Knowledge Base Hits */}
                 {analysisResult.kb_hits && analysisResult.kb_hits.length > 0 && (
                   <div className="mb-3">
                     <h6 className="text-primary">📚 Knowledge Base References:</h6>
@@ -580,7 +557,6 @@ function App() {
                   </div>
                 )}
 
-                {/* Model Info */}
                 {analysisResult.model_used && (
                   <div className="text-muted">
                     <small>⚙️ Analysis powered by: {analysisResult.model_used}</small>
