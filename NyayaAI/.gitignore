@@ -1,0 +1,47 @@
+# Python Backend
+Backend/**/__pycache__/
+Backend/**/*.py[cod]
+Backend/**/*$py.class
+Backend/**/*.so
+Backend/**/.Python
+Backend/**/env/
+Backend/**/venv/
+Backend/**/.env
+Backend/**/build/
+Backend/**/develop-eggs/
+Backend/**/dist/
+Backend/**/downloads/
+Backend/**/eggs/
+Backend/**/.eggs/
+Backend/**/lib/
+Backend/**/lib64/
+Backend/**/parts/
+Backend/**/sdist/
+Backend/**/var/
+Backend/**/.installed.cfg
+Backend/**/*.egg
+Backend/**/data/
+Backend/**/*.db
+Backend/**/*.index
+
+# Frontend
+frontend/node_modules/
+frontend/.env
+frontend/dist/
+frontend/dist-ssr/
+frontend/*.local
+frontend/logs/
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/pnpm-debug.log*
+frontend/.vite/
+
+# IDE specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+*.sublime-workspace
+*.sublime-project

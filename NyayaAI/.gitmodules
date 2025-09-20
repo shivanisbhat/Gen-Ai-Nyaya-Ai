@@ -1,0 +1,3 @@
+[submodule "Backend/path/to/LegalDoc"]
+	path = Backend/path/to/LegalDoc
+	url = https://github.com/Laasya-2279/LegalDoc.git
