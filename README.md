@@ -94,8 +94,8 @@ npm run dev
 ## Usage
 
 ### Web Interface
-1. Open http://localhost:5173 in your browser
-2. Upload a PDF document (legal contract, resume, etc.)
+1. Open https://gen-ai-nyaya-ai-1.onrender.com/ in your browser
+2. Upload a PDF document (legal contract, etc.)(For sample use Sample.pdf in the repo)
 3. Click "Analyse Document" to process the file
 4. Use the chat interface to ask questions about your document
 
