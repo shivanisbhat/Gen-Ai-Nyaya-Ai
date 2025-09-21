@@ -19,7 +19,7 @@ function App() {
   const [serverStatus, setServerStatus] = useState('unknown')
   const messagesEndRef = useRef(null)
 
-  const API_BASE = 'https://gen-ai-nyaya-ai.onrender.com'
+  const API_BASE = 'https://gen-ai-nyaya-ai-jqei.onrender.com'
 
   useEffect(() => {
     checkServerStatus()
