@@ -95,7 +95,7 @@ npm run dev
 
 ### Web Interface
 1. Open https://gen-ai-nyaya-ai-1.onrender.com/ in your browser
-2. Upload a PDF document (legal contract, etc.)(For sample use Sample.pdf in the repo)
+2. Upload a PDF document (legal contract, etc.)(For sample use Sample.pdf in the repo:https://drive.google.com/file/d/1F6r2L0FKM89QvM7B5cIqXmtTlm2pjcW6/view?usp=sharing)
 3. Click "Analyse Document" to process the file
 4. Use the chat interface to ask questions about your document
 
@@ -139,7 +139,6 @@ python cli.py kb rebuild
 - Court documents
 
 **Other Documents:**
-- Resumes/CVs (career advice)
 - General documents (content explanation)
 
 ## Configuration
